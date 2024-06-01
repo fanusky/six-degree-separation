@@ -107,3 +107,8 @@ def getSixDegrees(start: str, end: str):
     release_db_connection(cursor)
 
     return data
+
+
+@router.get("/hello")
+def getHello():
+    return "HELLOO"
