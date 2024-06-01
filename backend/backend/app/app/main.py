@@ -5,9 +5,6 @@ from starlette.middleware.cors import CORSMiddleware
 
 from fastapi import FastAPI, HTTPException, Depends, status
 
-
-
-
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -15,10 +12,9 @@ async def lifespan(app: FastAPI):
     yield
     # shutdown
     print("shutdown fastapi")
-    
 
 
-# Core Application Instance
+
 app = FastAPI(
     title=settings.PROJECT_NAME,
     version=settings.API_VERSION,
@@ -26,14 +22,13 @@ app = FastAPI(
     lifespan=lifespan,
 )
 
-# Set all CORS origins enabled
 if settings.BACKEND_CORS_ORIGINS:
     app.add_middleware(
         CORSMiddleware,
         allow_origins=[str(origin) for origin in settings.BACKEND_CORS_ORIGINS],
         allow_credentials=True,
-        allow_methods=["*"],
-        allow_headers=["*"],
+        allow_methods=[""],
+        allow_headers=[""],
     )
 
 @app.get("/")
@@ -45,5 +40,5 @@ async def root():
     return {"message": "Hello World"}
 
 
-# Add Routers
+
 app.include_router(api_router_v1, prefix=settings.API_V1_STR)

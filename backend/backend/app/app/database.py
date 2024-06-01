@@ -1,28 +1,21 @@
+import psycopg2
 from dotenv import load_dotenv
 import os
-
-import mysql.connector
 
 
 load_dotenv()
 
-__key = os.getenv("SECRET_KEY_DATABASE")
+key = os.getenv("SECRET_KEY_DATABASE")
+user = os.getenv("USER_DATABASE")
 
+def get_db_connection():
+    conn = psycopg2.connect(database="postgres",
+                            host="localhost",
+                            user=user,
+                            password=key,
+                            port="5432")
+    cursor = conn.cursor()
+    return cursor
 
-cnx = mysql.connector.connect(
-    user='root',
-    password=__key,
-    host='localhost',
-    database='dreamhouse'
-)
-cursor = cnx.cursor()
-
-
-cursor.execute("select * from client;")
-
-results = cursor.fetchall()
-
-print(results)
-
-cursor.close()
-cnx.close()
+def release_db_connection(conn):
+    conn.close()
