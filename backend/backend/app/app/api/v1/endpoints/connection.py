@@ -5,29 +5,35 @@ from app.database import  get_db_connection, release_db_connection
 router = APIRouter()
 
 def sortConnection(start, end, connections):
+    print(f"Start and end: {start} and {end}")
+    print(f"Graph: {connections}")
     movies = []
     actors = []
     actors_map = defaultdict(list)
+    print("Created empty arrays")
     for index, connection in enumerate(connections):
         actors_map[connection[0]].append(index)
         actors_map[connection[1]].append(index)
+    print(f"Arranged all data: {actors_map}")
     actors.append(start)
     visited_index = []
     while actors[-1] != end:
         for index in actors_map[actors[-1]]:
             if index not in visited_index:
                 visited_index.append(index)
-                if connections[index][0] != actors[-1]:
-                    actors.append(connections[index][0])
-                else:
+                if connections[index][0] == actors[-1]:
                     actors.append(connections[index][1])
-                movies.append(connections[index][2])
-
+                    movies.append(connections[index][2])
+                
+    print(f"Result: Movies {movies} and actors {actors}")
     return {'movies': movies, 'actors': actors}
 
 @router.get("/connection")
 def getSixDegrees(start: str, end: str):
+    print(f"Connecting..........................................................")
+    print(f"1getSixDegrees data: {start} and {end}")
     cursor = get_db_connection()
+    print(f"getSixDegrees data: {start} and {end}")
     query = (
             "WITH actor_ids AS (\n"
             "        SELECT\n"
@@ -101,9 +107,12 @@ def getSixDegrees(start: str, end: str):
             "    ORDER BY\n"
             "        mbp.actor1_id, mbp.actor2_id;\n"
         ).format(start=start, end=end)
+    print(f"Formated")
     cursor.execute(query)
+    print(f"Big query executed")
 
     data = sortConnection(start, end, cursor.fetchall())
+    print(f"conn data: {data}")
     release_db_connection(cursor)
 
     return data
@@ -111,9 +120,12 @@ def getSixDegrees(start: str, end: str):
 @router.get("/actors/{name}")
 def getActors(name: str):
     cursor = get_db_connection()
+    print(f"Connected")
     query = ("SELECT primaryname FROM actors_perita WHERE primaryname LIKE '%{name}%' ORDER BY id ASC LIMIT 5;").format(name=name)
     cursor.execute(query)
+    print(f"Executed")
     data = cursor.fetchall()
+    print(f"actor data: {data}")
     release_db_connection(cursor)
 
     return data
