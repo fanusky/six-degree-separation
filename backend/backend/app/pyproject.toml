@@ -36,7 +36,7 @@ requires = [ "poetry-core",]
 build-backend = "poetry.core.masonry.api"
 
 [tool.poetry.dependencies]
-python = ">=3.10,<3.12"
+python = ">=3.10,<3.12.4"
 fastapi = {extras = ["all"], version = "^0.111.0"}
 fastapi-pagination = {extras = ["sqlalchemy"], version = "^0.12.24"}
 asyncer = "^0.0.7"

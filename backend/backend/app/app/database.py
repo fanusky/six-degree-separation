@@ -9,7 +9,7 @@ key = os.getenv("SECRET_KEY_DATABASE")
 user = os.getenv("USER_DATABASE")
 
 def get_db_connection():
-    conn = psycopg2.connect(database="postgres",
+    conn = psycopg2.connect(database="bdd_postgres",
                             host="localhost",
                             user=user,
                             password=key,
