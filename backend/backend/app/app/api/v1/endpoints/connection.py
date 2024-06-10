@@ -108,7 +108,12 @@ def getSixDegrees(start: str, end: str):
 
     return data
 
+@router.get("/actors/{name}")
+def getActors(name: str):
+    cursor = get_db_connection()
+    query = ("SELECT primaryname FROM actors_perita WHERE primaryname LIKE '%{name}%' ORDER BY id ASC LIMIT 5;").format(name=name)
+    cursor.execute(query)
+    data = cursor.fetchall()
+    release_db_connection(cursor)
 
-@router.get("/hello")
-def getHello():
-    return "HELLOO"
+    return data
